@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "lerenard-app",
+  "name": "renardai",
   "main": "src/index.ts",
   "compatibility_date": "2025-08-01",
   "compatibility_flags": [
@@ -13,11 +13,5 @@
   "ai": {
     "binding": "CUSTOM_AI"
   },
-  "upload_source_maps": false,
-  "build": {
-    "external": [
-      "base64-js",
-      "mustache"
-    ]
-  }
+  "upload_source_maps": false
 }
