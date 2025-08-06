@@ -1,6 +1,6 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",  
-  "name": "lerenard",
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "lerenard-app",
   "main": "src/index.ts",
   "compatibility_date": "2025-08-01",
   "compatibility_flags": [
@@ -15,11 +15,10 @@
   },
   "upload_source_maps": false,
   "build": {
-    "upload": {
-      "external": [
-        "base64-js",
-        "mustache"
-      ]
-    }
+    "external": [
+      "base64-js",
+      "mustache"
+    ]
   }
 }
+
