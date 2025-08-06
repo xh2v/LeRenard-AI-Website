@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",  
-  "name": "relzgpt-app",
+  "name": "lerenard-app",
   "main": "src/index.ts",
   "compatibility_date": "2025-08-01",
   "compatibility_flags": [
@@ -13,5 +13,11 @@
   "ai": {
     "binding": "CUSTOM_AI"
   },
-  "upload_source_maps": false
+  "upload_source_maps": false,
+  "no_bundle": true,
+  "external": [
+    "base64-js",
+    "mustache"
+  ]
 }
+
