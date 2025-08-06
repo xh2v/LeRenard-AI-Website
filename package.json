@@ -1,0 +1,18 @@
+{
+  "name": "relzgpt-app",
+  "description": "A lightweight chat interface powered by a custom AI backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "start": "vite preview",
+    "build": "vite build",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "typescript": "^5.3.3",
+    "vite": "^5.2.0",
+    "vitest": "^1.6.0"
+  }
+}
