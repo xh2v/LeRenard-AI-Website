@@ -14,10 +14,11 @@
     "binding": "CUSTOM_AI"
   },
   "upload_source_maps": false,
-  "no_bundle": true,
-  "external": [
-    "base64-js",
-    "mustache"
-  ]
+  "build": {
+    "external": [
+      "base64-js",
+      "mustache"
+    ]
+  }
 }
 
