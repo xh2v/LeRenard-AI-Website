@@ -1,21 +1,23 @@
-name = "renardai"
-main = "src/index.ts"
-compatibility_date = "2025-08-01"
-compatibility_flags = [
-  "nodejs_compat",
-  "global_fetch_strictly_public"
-]
-
-[observability]
-enabled = false
-
-[ai]
-binding = "CUSTOM_AI"
-ai_models = [
-  "@cf/meta/llama-3-8b-instruct",
-  "@cf/mistral/mistral-7b-instruct-v0.1",
-  "@cf/mistral/mixtral-8x7b-instruct-v0.1",
-  "@cf/google/gemma-7b-it-lora"
-]
-
-upload_source_maps = false
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "renardai",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-08-01",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "observability": {
+    "enabled": false
+  },
+  "ai": {
+    "binding": "CUSTOM_AI",
+    "ai_models": [
+      "@cf/meta/llama-3-8b-instruct",
+      "@cf/mistral/mistral-7b-instruct-v0.1",
+      "@cf/mistral/mixtral-8x7b-instruct-v0.1",
+      "@cf/google/gemma-7b-it-lora"
+    ]
+  },
+  "upload_source_maps": false
+}
