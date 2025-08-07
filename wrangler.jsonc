@@ -14,9 +14,9 @@
     "binding": "CUSTOM_AI",
     "ai_models": [
       "@cf/google/gemma-7b-it-lora",
-      "@hf/mistral/mistral-7b-instruct-v0.2",
+      "@cf/mistral/mistral-7b-instruct-v0.2",
       "@cf/mistral/mistral-7b-instruct-v0.1",
-      "@hf/meta-llama/meta-llama-3-8b-instruct"
+      "@cf/meta-llama/meta-llama-3-8b-instruct"
     ]
   },
   "upload_source_maps": false,
