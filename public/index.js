@@ -409,10 +409,10 @@ function hideModelModal() {
 
 function loadModels() {
     const mockModels = [
-        { id: '@cf/mistral/mistral-7b-instruct-v0.2', name: 'Mistral 7B Instruct v0.2', description_en: 'The latest Mistral instruct model', description_fr: 'Le dernier modèle instruct de Mistral', max_length: 8192 },
-        { id: '@cf/meta/llama-3-8b-instruct', name: 'Llama 3 8B Instruct', description_en: 'The latest Llama model from Meta, optimized for instructions', description_fr: 'Le dernier modèle Llama de Meta, optimisé pour les instructions', max_length: 8192 },
-        { id: '@cf/mistral/mixtral-8x7b-instruct-v0.1', name: 'Mixtral 8x7B Instruct v0.1', description_en: 'A Mixture of Experts model with 8x7B parameters', description_fr: 'Un modèle Mixture of Experts avec 8x7B paramètres', max_length: 32768 },
-        { id: '@cf/google/gemma-7b-it', name: 'Gemma 7B IT', description_en: 'Gemma model from Google, optimized for conversations', description_fr: 'Modèle Gemma de Google, optimisé pour les conversations', max_length: 8192 }
+        { id: '@cf/google/gemma-7b-it-lora', name: 'Gemma 7B IT Lora', description_en: 'Gemma model from Google with Lora tuning', description_fr: 'Modèle Gemma de Google avec réglage Lora', max_length: 8192 },
+        { id: '@hf/mistral/mistral-7b-instruct-v0.2', name: 'Mistral 7B Instruct v0.2', description_en: 'Mistral instruct model', description_fr: 'Modèle instruct de Mistral', max_length: 8192 },
+        { id: '@cf/mistral/mistral-7b-instruct-v0.1', name: 'Mistral 7B Instruct v0.1', description_en: 'Mistral instruct model', description_fr: 'Modèle instruct de Mistral', max_length: 8192 },
+        { id: '@hf/meta-llama/meta-llama-3-8b-instruct', name: 'Llama 3 8B Instruct', description_en: 'The latest Llama model from Meta, optimized for instructions', description_fr: 'Le dernier modèle Llama de Meta, optimisé pour les instructions', max_length: 8192 }
     ];
 
     state.models = mockModels;
@@ -481,34 +481,46 @@ async function sendMessage() {
         addTypingIndicator();
 
         try {
-            let chatHistory = conversation.messages.map(msg => ({ role: msg.role === 'user' ? 'user' : 'model', parts: [{ text: msg.content }] }));
-            const payload = { contents: chatHistory };
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${state.currentModel}:generateContent?key=${apiKey}`;
+            const workerUrl = 'https://renardai.seyzperly.workers.dev/api/chat';
+            const messagesForWorker = conversation.messages.map(msg => ({
+                role: msg.role,
+                content: msg.content
+            }));
 
-            const response = await fetch(apiUrl, {
+            const payload = {
+                messages: messagesForWorker,
+                model: state.currentModel,
+                stream: false
+            };
+
+            const response = await fetch(workerUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(payload)
             });
 
-            const result = await response.json();
+            const data = await response.json();
 
             removeTypingIndicator();
 
-            if (response.ok && result.candidates && result.candidates.length > 0 &&
-                result.candidates[0].content && result.candidates[0].content.parts &&
-                result.candidates[0].content.parts.length > 0) {
-                const aiResponseText = result.candidates[0].content.parts[0].text;
-                addMessageToChat(aiResponseText, 'assistant');
+            if (response.ok) {
+                if (data.response) {
+                    addMessageToChat(data.response, 'assistant');
+                } else {
+                    addMessageToChat(`Error: Unexpected API response format.`, 'assistant');
+                    console.error('Unexpected API response format:', data);
+                }
             } else {
-                const errorMessage = result.error?.message || 'Unknown error';
+                const errorMessage = data.error || 'Unknown error from worker';
                 addMessageToChat(`Error: ${errorMessage}`, 'assistant');
+                console.error('Worker API error:', data);
             }
         } catch (error) {
             removeTypingIndicator();
-            console.error('Error fetching AI response:', error);
-            addMessageToChat(`An error occurred while fetching the response. Please try again.`, 'assistant');
+            console.error('Error fetching AI response from worker:', error);
+            addMessageToChat(`An error occurred while fetching the response from the AI.`, 'assistant');
         }
     }
 }
