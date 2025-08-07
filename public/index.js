@@ -60,16 +60,13 @@ const translations = {
         toast_deleted: 'Conversation supprimée.'
     }
 };
-
 let currentLang = 'en';
 let currentConversationToRename = null;
-
 const state = {
-    currentModel: '@cf/meta-llama/Meta-Llama-3-8B-Instruct',
+    currentModel: '@cf/meta/llama-3.2-3b-instruct',
     currentConversation: null,
     conversations: []
 };
-
 const elements = {
     sidebarToggle: document.getElementById('sidebar-toggle'),
     sidebar: document.getElementById('sidebar'),
@@ -98,16 +95,13 @@ const elements = {
     renameCancel: document.getElementById('rename-cancel'),
     toastContainer: document.getElementById('toast-container')
 };
-
 function init() {
     setupEventListeners();
     loadModels();
     loadConversations();
     showHomePage();
-
     const savedLang = localStorage.getItem('lang') || 'en';
     setLanguage(savedLang);
-
     document.addEventListener('click', (e) => {
         if (window.innerWidth < 768 &&
             elements.sidebar.classList.contains('sidebar-visible') &&
@@ -117,37 +111,28 @@ function init() {
         }
     });
 }
-
 function setupEventListeners() {
     elements.sidebarToggle.addEventListener('click', (e) => {
         e.stopPropagation();
         elements.sidebar.classList.toggle('sidebar-visible');
     });
-
     elements.themeToggle.addEventListener('click', toggleTheme);
-
     elements.messageInput.addEventListener('input', autoResizeTextarea);
-
     elements.messageInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             sendMessage();
         }
     });
-
     elements.sendButton.addEventListener('click', sendMessage);
-
     elements.startChat.addEventListener('click', startNewChat);
     elements.newChat.addEventListener('click', startNewChat);
     elements.homeButton.addEventListener('click', showHomePage);
-
     elements.modelSelector.addEventListener('click', showModelModal);
     elements.closeModelModal.addEventListener('click', hideModelModal);
     elements.confirmModel.addEventListener('click', hideModelModal);
-
     elements.langFr.addEventListener('click', () => setLanguage('fr'));
     elements.langEn.addEventListener('click', () => setLanguage('en'));
-
     elements.renameCancel.addEventListener('click', () => {
         elements.renameModal.classList.add('hidden');
         currentConversationToRename = null;
@@ -161,11 +146,9 @@ function setupEventListeners() {
         currentConversationToRename = null;
     });
 }
-
 function setLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('lang', lang);
-
     if (lang === 'fr') {
         elements.langFr.classList.add('bg-accent-purple', 'text-white');
         elements.langFr.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-200', 'dark:hover:bg-dark-700');
@@ -179,44 +162,36 @@ function setLanguage(lang) {
         elements.langFr.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-200', 'dark:hover:bg-dark-700');
         document.documentElement.lang = 'en';
     }
-
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.dataset.i18n;
         if (translations[lang] && translations[lang][key]) {
             el.textContent = translations[lang][key];
         }
     });
-
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         const key = el.dataset.i18nPlaceholder;
         if (translations[lang] && translations[lang][key]) {
             el.placeholder = translations[lang][key];
         }
     });
-
     if (translations[lang] && translations[lang]['title']) {
         document.title = translations[lang]['title'];
     }
 }
-
 function toggleTheme() {
     document.documentElement.classList.toggle('dark');
-
     const icon = elements.themeToggle.querySelector('svg');
     if (document.documentElement.classList.contains('dark')) {
         icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
     } else {
         icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
     }
-
     localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
 }
-
 function autoResizeTextarea() {
     elements.messageInput.style.height = 'auto';
     elements.messageInput.style.height = `${elements.messageInput.scrollHeight}px`;
 }
-
 function showHomePage() {
     elements.homePage.classList.remove('hidden');
     elements.chatPage.classList.add('hidden');
@@ -224,7 +199,6 @@ function showHomePage() {
         elements.homePage.classList.add('page-enter-active');
     }, 10);
 }
-
 function showChatPage() {
     elements.homePage.classList.add('hidden');
     elements.chatPage.classList.remove('hidden');
@@ -232,13 +206,11 @@ function showChatPage() {
         elements.messageInput.focus();
     }, 100);
 }
-
 function loadConversations() {
     const storedConversations = JSON.parse(localStorage.getItem('conversations')) || [];
     state.conversations = storedConversations;
     renderConversationList();
 }
-
 function renderConversationList() {
     elements.conversations.innerHTML = '';
     if (state.conversations.length === 0) {
@@ -252,12 +224,10 @@ function renderConversationList() {
         state.conversations.forEach(conv => addConversationToList(conv.id, conv.title));
     }
 }
-
 function saveConversations() {
     localStorage.setItem('conversations', JSON.stringify(state.conversations));
     renderConversationList();
 }
-
 function startNewChat() {
     const newChatId = `conv-${Date.now()}`;
     const newConversation = {
@@ -267,42 +237,33 @@ function startNewChat() {
     };
     state.conversations.unshift(newConversation);
     saveConversations();
-
     state.currentConversation = newChatId;
     elements.chatContainer.innerHTML = '';
     showChatPage();
-
     setTimeout(() => {
         addMessageToChat(getWelcomeMessage(), 'assistant', true);
     }, 500);
 }
-
 function getWelcomeMessage() {
-    const modelName = state.models?.find(m => m.id === state.currentModel)?.name || 'Mistral';
-
+    const modelName = state.models?.find(m => m.id === state.currentModel)?.name || 'Modèle Renard';
     if (currentLang === 'fr') {
         return `Bonjour ! Je suis Le Renard, votre assistant IA basé sur ${modelName}.
-
 Je peux vous aider avec :
 - Réponses à vos questions
 - Génération de contenu
 - Analyse de texte
 - Et bien plus encore !
-
 Comment puis-ce vous aider aujourd'hui ?`;
     } else {
         return `Hello! I am Le Renard, your AI assistant based on ${modelName}.
-
 I can help you with:
 - Answering your questions
 - Content generation
 - Text analysis
 - And much more!
-
 How can I help you today?`;
     }
 }
-
 function addConversationToList(id, title) {
     const li = document.createElement('li');
     li.dataset.id = id;
@@ -337,13 +298,11 @@ function addConversationToList(id, title) {
     `;
     elements.conversations.prepend(li);
     setLanguage(currentLang);
-
     li.querySelector('.conversation-item').addEventListener('click', (e) => {
         if (!e.target.closest('.conversation-actions-toggle') && !e.target.closest('.conversation-actions-menu')) {
             loadConversation(id);
         }
     });
-
     li.querySelector('.conversation-actions-toggle').addEventListener('click', (e) => {
         e.stopPropagation();
         const menu = li.querySelector('.conversation-actions-menu');
@@ -352,23 +311,19 @@ function addConversationToList(id, title) {
         });
         menu.classList.toggle('hidden');
     });
-
     li.querySelector('.rename-btn').addEventListener('click', () => {
         showRenameModal(id, li.querySelector('.truncate').textContent);
     });
-
     li.querySelector('.delete-btn').addEventListener('click', () => {
         deleteConversation(id);
     });
 }
-
 function showRenameModal(id, title) {
     currentConversationToRename = id;
     elements.renameInput.value = title;
     elements.renameModal.classList.remove('hidden');
     elements.renameInput.focus();
 }
-
 function renameConversation(id, newTitle) {
     const conversation = state.conversations.find(c => c.id === id);
     if (conversation) {
@@ -377,7 +332,6 @@ function renameConversation(id, newTitle) {
         showToast(translations[currentLang].toast_renamed);
     }
 }
-
 function deleteConversation(id) {
     const conversationIndex = state.conversations.findIndex(c => c.id === id);
     if (conversationIndex > -1) {
@@ -386,7 +340,6 @@ function deleteConversation(id) {
         showToast(translations[currentLang].toast_deleted);
     }
 }
-
 function loadConversation(id) {
     state.currentConversation = id;
     const conversation = state.conversations.find(c => c.id === id);
@@ -398,30 +351,24 @@ function loadConversation(id) {
     }
     showChatPage();
 }
-
 function showModelModal() {
     elements.modelModal.classList.remove('hidden');
 }
-
 function hideModelModal() {
     elements.modelModal.classList.add('hidden');
 }
-
 function loadModels() {
     const mockModels = [
-        { id: '@cf/meta-llama/Meta-Llama-3-8B-Instruct', name: 'Meta Llama 3 - 8B Instruct', description_en: 'The latest Llama model from Meta, optimized for instructions', description_fr: 'Le dernier modèle Llama de Meta, optimisé pour les instructions', max_length: 8192 },
-        { id: '@cf/mistral/Mistral-7B-Instruct-v0.2', name: 'Mistral 7B Instruct v0.2', description_en: 'Mistral instruct model', description_fr: 'Modèle instruct de Mistral', max_length: 8192 },
-        { id: '@cf/mistral/Mixtral-8x7b-Instruct-v0.1', name: 'Mixtral 8x7B Instruct v0.1', description_en: 'Mistral\'s Mixture of Experts model', description_fr: 'Modèle de Mixture d\'Experts de Mistral', max_length: 32768 },
-        { id: '@cf/google/Gemma-7B-It', name: 'Google Gemma 7B Italian', description_en: 'Gemma model from Google, Italian variant', description_fr: 'Modèle Gemma de Google, variante italienne', max_length: 8192 },
+        { id: '@cf/meta/llama-3.2-3b-instruct', name: 'Llama 3.2 3B Instruct', description_en: 'The latest Llama model from Meta, optimized for instructions', description_fr: 'Le dernier modèle Llama de Meta, optimisé pour les instructions', max_length: 8192 },
+        { id: '@cf/meta/llama-3.2-11b-vision-instruct', name: 'Llama 3.2 11B Vision Instruct', description_en: 'The latest Llama model from Meta with vision capabilities', description_fr: 'Le dernier modèle Llama de Meta avec des capacités de vision', max_length: 8192 },
+        { id: '@cf/google/gemma-3-12b-it', name: 'Gemma 3 12B Instruct', description_en: 'Gemma model from Google', description_fr: 'Modèle Gemma de Google', max_length: 8192 },
+        { id: 'deepseek-math-7b-instruct', name: 'Deepseek Math 7B Instruct', description_en: 'A powerful model for math instructions', description_fr: 'Un modèle puissant pour les instructions mathématiques', max_length: 8192 },
     ];
-
     state.models = mockModels;
     renderModels(mockModels);
 }
-
 function renderModels(models) {
     elements.modelList.innerHTML = '';
-
     models.forEach(model => {
         const div = document.createElement('div');
         div.className = `p-4 rounded-lg cursor-pointer transition ${state.currentModel === model.id ? 'bg-gray-100 dark:bg-dark-700 border border-accent-purple' : 'bg-gray-100 dark:bg-dark-700/50 hover:bg-gray-200 dark:hover:bg-dark-700'}`;
@@ -440,7 +387,6 @@ function renderModels(models) {
                 </div>
             </div>
         `;
-
         div.addEventListener('click', () => {
             document.querySelectorAll('#model-list > div').forEach(el => {
                 el.classList.remove('bg-gray-100', 'dark:bg-dark-700', 'border', 'border-accent-purple');
@@ -451,48 +397,39 @@ function renderModels(models) {
                     el.querySelector('.rounded-full > div').remove();
                 }
             });
-
             div.classList.add('bg-gray-100', 'dark:bg-dark-700', 'border', 'border-accent-purple');
             div.classList.remove('bg-gray-100', 'dark:bg-dark-700/50', 'hover:bg-gray-200', 'dark:hover:bg-dark-700');
             div.querySelector('.rounded-full').classList.add('border-accent-purple', 'bg-accent-purple');
             div.querySelector('.rounded-full').classList.remove('border-gray-400', 'dark:border-gray-500');
             div.querySelector('.rounded-full').innerHTML = '<div class="w-2 h-2 rounded-full bg-white"></div>';
-
             state.currentModel = model.id;
         });
-
         elements.modelList.appendChild(div);
     });
 }
-
 async function sendMessage() {
     const message = elements.messageInput.value.trim();
     if (message && state.currentConversation) {
         addMessageToChat(message, 'user');
         elements.messageInput.value = '';
         elements.messageInput.style.height = 'auto';
-
         const conversation = state.conversations.find(c => c.id === state.currentConversation);
         if (conversation) {
             conversation.messages.push({ role: 'user', content: message });
             saveConversations();
         }
-
         addTypingIndicator();
-
         try {
             const workerUrl = 'https://renardai.seyzperly.workers.dev/api/chat';
             const messagesForWorker = conversation.messages.map(msg => ({
                 role: msg.role,
                 content: msg.content
             }));
-
             const payload = {
                 messages: messagesForWorker,
                 model: state.currentModel,
                 stream: false
             };
-
             const response = await fetch(workerUrl, {
                 method: 'POST',
                 headers: {
@@ -500,11 +437,8 @@ async function sendMessage() {
                 },
                 body: JSON.stringify(payload)
             });
-
             const data = await response.json();
-
             removeTypingIndicator();
-
             if (response.ok) {
                 if (data.response) {
                     addMessageToChat(data.response, 'assistant');
@@ -524,10 +458,8 @@ async function sendMessage() {
         }
     }
 }
-
 function addMessageToChat(message, sender, isWelcome = false) {
     const conversation = state.conversations.find(c => c.id === state.currentConversation);
-
     if (!isWelcome && conversation) {
         conversation.messages.push({
             role: sender,
@@ -535,10 +467,8 @@ function addMessageToChat(message, sender, isWelcome = false) {
         });
         saveConversations();
     }
-
     const messageElement = document.createElement('div');
     messageElement.className = 'message-enter';
-
     if (sender === 'user') {
         messageElement.innerHTML = `
             <div class="flex space-x-3 max-w-3xl mx-auto justify-end">
@@ -598,14 +528,11 @@ function addMessageToChat(message, sender, isWelcome = false) {
             </div>
         `;
     }
-
     elements.chatContainer.appendChild(messageElement);
     elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
-
     setTimeout(() => {
         messageElement.classList.add('message-enter-active');
     }, 10);
-
     messageElement.querySelectorAll('.copy-btn').forEach(btn => {
         btn.addEventListener('click', async () => {
             const content = decodeURIComponent(btn.dataset.content);
@@ -624,7 +551,6 @@ function addMessageToChat(message, sender, isWelcome = false) {
                 textarea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
-
                 btn.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -636,18 +562,15 @@ function addMessageToChat(message, sender, isWelcome = false) {
             }, 2000);
         });
     });
-
     if (sender === 'assistant') {
         messageElement.querySelector('.like-btn').addEventListener('click', (e) => {
             e.target.closest('button').classList.toggle('text-green-500');
         });
-
         messageElement.querySelector('.dislike-btn').addEventListener('click', (e) => {
             e.target.closest('button').classList.toggle('text-red-500');
         });
     }
 }
-
 function showToast(message) {
     const toastElement = document.createElement('div');
     toastElement.className = 'toast bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center space-x-3';
@@ -662,7 +585,6 @@ function showToast(message) {
         toastElement.remove();
     }, 3500);
 }
-
 function addTypingIndicator() {
     const typingElement = document.createElement('div');
     typingElement.className = 'flex space-x-3 max-w-3xl mx-auto';
@@ -685,17 +607,14 @@ function addTypingIndicator() {
     elements.chatContainer.appendChild(typingElement);
     elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
 }
-
 function removeTypingIndicator() {
     const typingIndicators = document.querySelectorAll('.typing-indicator');
     if (typingIndicators.length > 0) {
         typingIndicators[typingIndicators.length - 1].parentElement.parentElement.parentElement.remove();
     }
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     init();
-
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
