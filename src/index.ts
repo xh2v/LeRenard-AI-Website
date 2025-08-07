@@ -1,18 +1,18 @@
 const MODELS: Record<string, { maxTokens: number, description: string }> = {
-  '@cf/mistral/mistral-7b-instruct-v0.2': {
+  '@cf/meta/llama-3.2-3b-instruct': {
     maxTokens: 8192,
-    description: 'The latest Mistral instruct model'
+    description: 'Meta LLaMA 3.2 - 3B Instruct model, ideal for lightweight instruction-following'
   },
-  '@cf/meta/llama-3-8b-instruct': {
+  '@cf/meta/llama-3.2-11b-vision-instruct': {
     maxTokens: 8192,
-    description: 'The latest Llama model from Meta, optimized for instructions'
+    description: 'Meta LLaMA 3.2 - 11B Vision Instruct model with multimodal support (text + image)'
   },
-  '@cf/mistral/mixtral-8x7b-instruct-v0.1': {
-    maxTokens: 32768,
-    description: 'A Mixture of Experts model with 8x7B parameters'
-  },
-  '@cf/google/gemma-7b-it-lora': {
+  '@cf/google/gemma-3-12b-it': {
     maxTokens: 8192,
-    description: 'Gemma model from Google, optimized for conversations'
+    description: 'Google Gemma 3 - 12B Instruction-Tuned model, optimized for helpful dialog'
+  },
+  'deepseek-math-7b-instruct': {
+    maxTokens: 8192,
+    description: 'DeepSeek Math 7B - specialized in solving math problems and reasoning'
   }
 };
