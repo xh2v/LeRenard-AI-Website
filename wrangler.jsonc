@@ -11,7 +11,13 @@
     "enabled": false
   },
   "ai": {
-    "binding": "CUSTOM_AI"
+    "binding": "CUSTOM_AI",
+    "ai_models": [
+      "@cf/meta/llama-3-8b-instruct",
+      "@cf/mistral/mistral-7b-instruct-v0.2",
+      "@cf/mistral/mixtral-8x7b-instruct-v0.1",
+      "@cf/google/gemma-7b-it"
+    ]
   },
   "upload_source_maps": false,
   "build": {
@@ -21,4 +27,3 @@
     ]
   }
 }
-
