@@ -410,9 +410,9 @@ function hideModelModal() {
 function loadModels() {
     const mockModels = [
         { id: '@cf/google/gemma-7b-it-lora', name: 'Gemma 7B IT Lora', description_en: 'Gemma model from Google with Lora tuning', description_fr: 'Modèle Gemma de Google avec réglage Lora', max_length: 8192 },
-        { id: '@hf/mistral/mistral-7b-instruct-v0.2', name: 'Mistral 7B Instruct v0.2', description_en: 'Mistral instruct model', description_fr: 'Modèle instruct de Mistral', max_length: 8192 },
+        { id: '@cf/mistral/mistral-7b-instruct-v0.2', name: 'Mistral 7B Instruct v0.2', description_en: 'Mistral instruct model', description_fr: 'Modèle instruct de Mistral', max_length: 8192 },
         { id: '@cf/mistral/mistral-7b-instruct-v0.1', name: 'Mistral 7B Instruct v0.1', description_en: 'Mistral instruct model', description_fr: 'Modèle instruct de Mistral', max_length: 8192 },
-        { id: '@hf/meta-llama/meta-llama-3-8b-instruct', name: 'Llama 3 8B Instruct', description_en: 'The latest Llama model from Meta, optimized for instructions', description_fr: 'Le dernier modèle Llama de Meta, optimisé pour les instructions', max_length: 8192 }
+        { id: '@cf/meta-llama/meta-llama-3-8b-instruct', name: 'Llama 3 8B Instruct', description_en: 'The latest Llama model from Meta, optimized for instructions', description_fr: 'Le dernier modèle Llama de Meta, optimisé pour les instructions', max_length: 8192 }
     ];
 
     state.models = mockModels;
