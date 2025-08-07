@@ -1,23 +1,13 @@
-{
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "renardai",
-  "main": "src/index.ts",
-  "compatibility_date": "2025-08-01",
-  "compatibility_flags": [
-    "nodejs_compat",
-    "global_fetch_strictly_public"
-  ],
-  "observability": {
-    "enabled": false
-  },
-  "ai": {
-    "binding": "CUSTOM_AI",
-    "ai_models": [
-      "@cf/meta/llama-3-8b-instruct",
-      "@cf/mistral/mistral-7b-instruct-v0.1",
-      "@cf/mistral/mixtral-8x7b-instruct-v0.1",
-      "@cf/google/gemma-7b-it-lora"
-    ]
-  },
-  "upload_source_maps": false
-}
+name = "renardai"
+main = "src/index.ts"
+compatibility_date = "2025-08-01"
+compatibility_flags = ["global_fetch_strictly_public"]
+
+[ai]
+binding = "CUSTOM_AI"
+ai_models = [
+  "@cf/meta-llama/Meta-Llama-3-8B-Instruct",
+  "@cf/mistral/Mistral-7B-Instruct-v0.2",
+  "@cf/mistral/Mixtral-8x7B-Instruct-v0.1",
+  "@cf/google/Gemma-7B-It"
+]
