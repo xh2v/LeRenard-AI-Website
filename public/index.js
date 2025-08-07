@@ -65,7 +65,7 @@ let currentLang = 'en';
 let currentConversationToRename = null;
 
 const state = {
-    currentModel: '@cf/mistral/mistral-7b-instruct-v0.2',
+    currentModel: '@cf/meta-llama/Meta-Llama-3-8B-Instruct',
     currentConversation: null,
     conversations: []
 };
@@ -409,10 +409,10 @@ function hideModelModal() {
 
 function loadModels() {
     const mockModels = [
-        { id: '@cf/google/gemma-7b-it-lora', name: 'Gemma 7B IT Lora', description_en: 'Gemma model from Google with Lora tuning', description_fr: 'Modèle Gemma de Google avec réglage Lora', max_length: 8192 },
-        { id: '@cf/mistral/mistral-7b-instruct-v0.2', name: 'Mistral 7B Instruct v0.2', description_en: 'Mistral instruct model', description_fr: 'Modèle instruct de Mistral', max_length: 8192 },
-        { id: '@cf/mistral/mistral-7b-instruct-v0.1', name: 'Mistral 7B Instruct v0.1', description_en: 'Mistral instruct model', description_fr: 'Modèle instruct de Mistral', max_length: 8192 },
-        { id: '@cf/meta-llama/meta-llama-3-8b-instruct', name: 'Llama 3 8B Instruct', description_en: 'The latest Llama model from Meta, optimized for instructions', description_fr: 'Le dernier modèle Llama de Meta, optimisé pour les instructions', max_length: 8192 }
+        { id: '@cf/meta-llama/Meta-Llama-3-8B-Instruct', name: 'Meta Llama 3 - 8B Instruct', description_en: 'The latest Llama model from Meta, optimized for instructions', description_fr: 'Le dernier modèle Llama de Meta, optimisé pour les instructions', max_length: 8192 },
+        { id: '@cf/mistral/Mistral-7B-Instruct-v0.2', name: 'Mistral 7B Instruct v0.2', description_en: 'Mistral instruct model', description_fr: 'Modèle instruct de Mistral', max_length: 8192 },
+        { id: '@cf/mistral/Mixtral-8x7b-Instruct-v0.1', name: 'Mixtral 8x7B Instruct v0.1', description_en: 'Mistral\'s Mixture of Experts model', description_fr: 'Modèle de Mixture d\'Experts de Mistral', max_length: 32768 },
+        { id: '@cf/google/Gemma-7B-It', name: 'Google Gemma 7B Italian', description_en: 'Gemma model from Google, Italian variant', description_fr: 'Modèle Gemma de Google, variante italienne', max_length: 8192 },
     ];
 
     state.models = mockModels;
@@ -607,15 +607,30 @@ function addMessageToChat(message, sender, isWelcome = false) {
     }, 10);
 
     messageElement.querySelectorAll('.copy-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
             const content = decodeURIComponent(btn.dataset.content);
-            document.execCommand('copy');
             const originalInnerHTML = btn.innerHTML;
-            btn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-            `;
+            try {
+                await navigator.clipboard.writeText(content);
+                btn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                `;
+            } catch (err) {
+                const textarea = document.createElement('textarea');
+                textarea.value = content;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+
+                btn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                `;
+            }
             setTimeout(() => {
                 btn.innerHTML = originalInnerHTML;
             }, 2000);
