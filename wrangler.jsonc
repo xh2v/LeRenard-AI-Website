@@ -11,10 +11,10 @@
   "ai": {
     "binding": "CUSTOM_AI",
     "ai_models": [
-      "@cf/meta-llama/Meta-Llama-3-8B-Instruct",
-      "@cf/mistral/Mistral-7B-Instruct-v0.2",
-      "@cf/mistral/Mixtral-8x7B-Instruct-v0.1",
-      "@cf/google/Gemma-7B-It"
+      "@cf/meta/llama-3.2-3b-instruct",
+      "@cf/meta/llama-3.2-11b-vision-instruct",
+      "@cf/google/gemma-3-12b-it",
+      "deepseek-math-7b-instruct"
     ]
   }
 }
