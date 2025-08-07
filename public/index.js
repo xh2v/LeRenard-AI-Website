@@ -107,11 +107,11 @@ function init() {
 
     const savedLang = localStorage.getItem('lang') || 'en';
     setLanguage(savedLang);
-    
+
     document.addEventListener('click', (e) => {
-        if (window.innerWidth < 768 && 
+        if (window.innerWidth < 768 &&
             elements.sidebar.classList.contains('sidebar-visible') &&
-            !elements.sidebar.contains(e.target) && 
+            !elements.sidebar.contains(e.target) &&
             e.target !== elements.sidebarToggle) {
             elements.sidebar.classList.remove('sidebar-visible');
         }
@@ -147,7 +147,7 @@ function setupEventListeners() {
 
     elements.langFr.addEventListener('click', () => setLanguage('fr'));
     elements.langEn.addEventListener('click', () => setLanguage('en'));
-    
+
     elements.renameCancel.addEventListener('click', () => {
         elements.renameModal.classList.add('hidden');
         currentConversationToRename = null;
@@ -194,7 +194,6 @@ function setLanguage(lang) {
         }
     });
 
-    // Update page title
     if (translations[lang] && translations[lang]['title']) {
         document.title = translations[lang]['title'];
     }
@@ -202,14 +201,14 @@ function setLanguage(lang) {
 
 function toggleTheme() {
     document.documentElement.classList.toggle('dark');
-    
+
     const icon = elements.themeToggle.querySelector('svg');
     if (document.documentElement.classList.contains('dark')) {
         icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />';
     } else {
         icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
     }
-    
+
     localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
 }
 
@@ -268,11 +267,11 @@ function startNewChat() {
     };
     state.conversations.unshift(newConversation);
     saveConversations();
-    
+
     state.currentConversation = newChatId;
     elements.chatContainer.innerHTML = '';
     showChatPage();
-    
+
     setTimeout(() => {
         addMessageToChat(getWelcomeMessage(), 'assistant', true);
     }, 500);
@@ -280,20 +279,20 @@ function startNewChat() {
 
 function getWelcomeMessage() {
     const modelName = state.models?.find(m => m.id === state.currentModel)?.name || 'Mistral';
-    
+
     if (currentLang === 'fr') {
-        return `Bonjour ! Je suis Le Renard, votre assistant IA basé sur ${modelName}. 
-        
+        return `Bonjour ! Je suis Le Renard, votre assistant IA basé sur ${modelName}.
+
 Je peux vous aider avec :
 - Réponses à vos questions
 - Génération de contenu
 - Analyse de texte
 - Et bien plus encore !
 
-Comment puis-je vous aider aujourd'hui ?`;
+Comment puis-ce vous aider aujourd'hui ?`;
     } else {
         return `Hello! I am Le Renard, your AI assistant based on ${modelName}.
-        
+
 I can help you with:
 - Answering your questions
 - Content generation
@@ -338,7 +337,7 @@ function addConversationToList(id, title) {
     `;
     elements.conversations.prepend(li);
     setLanguage(currentLang);
-    
+
     li.querySelector('.conversation-item').addEventListener('click', (e) => {
         if (!e.target.closest('.conversation-actions-toggle') && !e.target.closest('.conversation-actions-menu')) {
             loadConversation(id);
@@ -415,14 +414,14 @@ function loadModels() {
         { id: '@cf/mistral/mixtral-8x7b-instruct-v0.1', name: 'Mixtral 8x7B Instruct v0.1', description_en: 'A Mixture of Experts model with 8x7B parameters', description_fr: 'Un modèle Mixture of Experts avec 8x7B paramètres', max_length: 32768 },
         { id: '@cf/google/gemma-7b-it', name: 'Gemma 7B IT', description_en: 'Gemma model from Google, optimized for conversations', description_fr: 'Modèle Gemma de Google, optimisé pour les conversations', max_length: 8192 }
     ];
-    
+
     state.models = mockModels;
     renderModels(mockModels);
 }
 
 function renderModels(models) {
     elements.modelList.innerHTML = '';
-    
+
     models.forEach(model => {
         const div = document.createElement('div');
         div.className = `p-4 rounded-lg cursor-pointer transition ${state.currentModel === model.id ? 'bg-gray-100 dark:bg-dark-700 border border-accent-purple' : 'bg-gray-100 dark:bg-dark-700/50 hover:bg-gray-200 dark:hover:bg-dark-700'}`;
@@ -441,7 +440,7 @@ function renderModels(models) {
                 </div>
             </div>
         `;
-        
+
         div.addEventListener('click', () => {
             document.querySelectorAll('#model-list > div').forEach(el => {
                 el.classList.remove('bg-gray-100', 'dark:bg-dark-700', 'border', 'border-accent-purple');
@@ -452,16 +451,16 @@ function renderModels(models) {
                     el.querySelector('.rounded-full > div').remove();
                 }
             });
-            
+
             div.classList.add('bg-gray-100', 'dark:bg-dark-700', 'border', 'border-accent-purple');
             div.classList.remove('bg-gray-100', 'dark:bg-dark-700/50', 'hover:bg-gray-200', 'dark:hover:bg-dark-700');
             div.querySelector('.rounded-full').classList.add('border-accent-purple', 'bg-accent-purple');
             div.querySelector('.rounded-full').classList.remove('border-gray-400', 'dark:border-gray-500');
             div.querySelector('.rounded-full').innerHTML = '<div class="w-2 h-2 rounded-full bg-white"></div>';
-            
+
             state.currentModel = model.id;
         });
-        
+
         elements.modelList.appendChild(div);
     });
 }
@@ -472,7 +471,7 @@ async function sendMessage() {
         addMessageToChat(message, 'user');
         elements.messageInput.value = '';
         elements.messageInput.style.height = 'auto';
-        
+
         const conversation = state.conversations.find(c => c.id === state.currentConversation);
         if (conversation) {
             conversation.messages.push({ role: 'user', content: message });
@@ -480,30 +479,36 @@ async function sendMessage() {
         }
 
         addTypingIndicator();
-        
+
         try {
-            const response = await fetch('/api/chat', {
+            let chatHistory = conversation.messages.map(msg => ({ role: msg.role === 'user' ? 'user' : 'model', parts: [{ text: msg.content }] }));
+            const payload = { contents: chatHistory };
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${state.currentModel}:generateContent?key=${apiKey}`;
+
+            const response = await fetch(apiUrl, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    messages: conversation.messages,
-                    model: state.currentModel
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             });
-            const data = await response.json();
-            
+
+            const result = await response.json();
+
             removeTypingIndicator();
-            if (response.ok) {
-                addMessageToChat(data.response, 'assistant');
+
+            if (response.ok && result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0) {
+                const aiResponseText = result.candidates[0].content.parts[0].text;
+                addMessageToChat(aiResponseText, 'assistant');
             } else {
-                addMessageToChat(`Error: ${data.error}`, 'assistant');
+                const errorMessage = result.error?.message || 'Unknown error';
+                addMessageToChat(`Error: ${errorMessage}`, 'assistant');
             }
         } catch (error) {
             removeTypingIndicator();
             console.error('Error fetching AI response:', error);
-            addMessageToChat(`An error occurred while fetching the response.`, 'assistant');
+            addMessageToChat(`An error occurred while fetching the response. Please try again.`, 'assistant');
         }
     }
 }
@@ -518,10 +523,10 @@ function addMessageToChat(message, sender, isWelcome = false) {
         });
         saveConversations();
     }
-    
+
     const messageElement = document.createElement('div');
     messageElement.className = 'message-enter';
-    
+
     if (sender === 'user') {
         messageElement.innerHTML = `
             <div class="flex space-x-3 max-w-3xl mx-auto justify-end">
@@ -581,37 +586,35 @@ function addMessageToChat(message, sender, isWelcome = false) {
             </div>
         `;
     }
-    
+
     elements.chatContainer.appendChild(messageElement);
-    
     elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
-    
+
     setTimeout(() => {
         messageElement.classList.add('message-enter-active');
     }, 10);
-    
+
     messageElement.querySelectorAll('.copy-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const content = decodeURIComponent(btn.dataset.content);
-            navigator.clipboard.writeText(content).then(() => {
-                const originalInnerHTML = btn.innerHTML;
-                btn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                `;
-                setTimeout(() => {
-                    btn.innerHTML = originalInnerHTML;
-                }, 2000);
-            });
+            document.execCommand('copy');
+            const originalInnerHTML = btn.innerHTML;
+            btn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            `;
+            setTimeout(() => {
+                btn.innerHTML = originalInnerHTML;
+            }, 2000);
         });
     });
-    
+
     if (sender === 'assistant') {
         messageElement.querySelector('.like-btn').addEventListener('click', (e) => {
             e.target.closest('button').classList.toggle('text-green-500');
         });
-        
+
         messageElement.querySelector('.dislike-btn').addEventListener('click', (e) => {
             e.target.closest('button').classList.toggle('text-red-500');
         });
@@ -665,7 +668,7 @@ function removeTypingIndicator() {
 
 document.addEventListener('DOMContentLoaded', () => {
     init();
-    
+
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark');
@@ -675,4 +678,3 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.themeToggle.querySelector('svg').innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
     }
 });
-
