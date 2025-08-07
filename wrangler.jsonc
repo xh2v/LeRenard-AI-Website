@@ -1,20 +1,20 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "renardai",
-  "main": "src/index.ts",
+  "main": "dist/index.js",                
+  "type": "esm",                        
   "compatibility_date": "2025-08-01",
   "compatibility_flags": [
     "global_fetch_strictly_public"
   ],
   "upload_source_maps": false,
-  "modules": true,
   "ai": {
     "binding": "CUSTOM_AI",
     "ai_models": [
       "@cf/meta/llama-3.2-3b-instruct",
       "@cf/meta/llama-3.2-11b-vision-instruct",
       "@cf/google/gemma-3-12b-it",
-      "deepseek-math-7b-instruct"
+      "@cf/deepseek-math-7b-instruct"
     ]
   }
 }
