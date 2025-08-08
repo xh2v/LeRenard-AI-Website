@@ -1,12 +1,7 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "renardai",
   "main": "dist/index.js",
   "compatibility_date": "2025-08-01",
-  "compatibility_flags": [
-    "global_fetch_strictly_public"
-  ],
-  "upload_source_maps": false,
   "modules": true,
   "ai": {
     "binding": "CUSTOM_AI",
